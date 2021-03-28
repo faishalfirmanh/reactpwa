@@ -5,11 +5,14 @@ import Hero from './components/Hero'
 import Browse from './components/Browse'
 import Arrived from './components/Arrived'
 import Client from './components/Client';
-import AssideMenu from './components/AssideMenu'
-import Footer from './components/Footer'
+import AssideMenu from './components/AssideMenu.js';
+import Footer from './components/Footer.js';
+import Offline from './components/Offline.js';
+
 //<>//ini bernama fragmenrt, bisa diganti div juga
 function App() {
   const [item, setState ] = useState([]);
+  const [statausOffline, setOffline] = useState(!navigator.onLine);
 //memiliki 2 parameter , 1 function, 2,dependenci list[]
   React.useEffect(function(){
   (async function(){
@@ -22,11 +25,32 @@ function App() {
       });
       const {nodes } = await response.json();
       setState(nodes);
+
+      const script = document.createElement("script"); //load script Untuk scrol item, ketika item tidk muat dilaar
+      script.src = "/carousel.js";
+      script.async = false;
+      document.body.appendChild(script);
+
+      handleStatusOffline();// untuk membaca status online atau tidak
+      window.addEventListener('online', handleStatusOffline);
+      window.addEventListener('offline', handleStatusOffline);
+      return function()
+      {
+          window.removeEventListener('online', handleStatusOffline);
+          window.removeEventListener('offline', handleStatusOffline);
+      }
+
     })();
-  },[]);
+  },[statausOffline]); //[]
+
+  function handleStatusOffline()
+  {
+    setOffline(!navigator.onLine);
+  }
 
   return (
     <>
+    {statausOffline && <Offline/>}
     <Header/>
     <Hero/>
     <Browse/>
