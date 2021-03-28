@@ -30,7 +30,7 @@ function App() {
     <Header/>
     <Hero/>
     <Browse/>
-    <Arrived itemArrived={item}/> //menmpilkan data
+    <Arrived itemArrived={item}/>
     <Client/>
     <AssideMenu/>
     <Footer/>
