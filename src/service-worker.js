@@ -11,7 +11,7 @@ import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate } from 'workbox-strategies';
+import { StaleWhileRevalidate , NetworkFirst} from 'workbox-strategies';
 
 clientsClaim();
 
@@ -61,6 +61,61 @@ registerRoute(
     ],
   })
 );
+//menambahkan ketika ingin import google fonts agar ketika ofline dpt dipake
+registerRoute(({url}) => url.origin === 'https://fonts.googleapis.com' ||
+url.origin === 'https://fonts.gstatic.com',new NetworkFirst({
+  cacheName: 'fonts',
+  plugins:[
+    new ExpirationPlugin({
+      maxAgeSeconds: 60 * 60*24 *356,
+      maxEntries:30
+    })
+  ]
+}))
+
+registerRoute(
+  ({url}) => /\.(jpe?g|png)$/i.test(url.pathname), new StaleWhileRevalidate
+  ({
+      cacheName:'api-image',
+      plugins:
+      [
+        new ExpirationPlugin
+        ({
+          maxEntries: 30
+        })
+      ]
+  })
+);
+
+//NetworkFirst merupakan salah satu straregi yng digunkn pada service-worker, untuk mode ofline
+registerRoute(({url})=> url.origin.includes("qorebase.io"),new NetworkFirst
+  ({
+      cacheName: 'apidata',
+      plugins:
+      [
+        new ExpirationPlugin
+        ({
+          maxAgeSeconds: 360,
+          maxEntries:30
+        })
+      ]
+  })
+)
+
+// self.addEventListener('install', function(e)
+// {
+//   console.log('sw install')
+//   const asyncInstall = new Promise(function(resolve){
+//     console.log('Waiting install to fininsh..');//cek menunggu sampi 5 detik
+//     setTimeout(resolve,5000)
+//   })
+//   e.waitUntil(asyncInstall)
+// });
+
+self.addEventListener('activate', function(e)
+{
+  console.log('sw activate');
+});
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
