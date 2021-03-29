@@ -8,11 +8,13 @@ import Client from './components/Client';
 import AssideMenu from './components/AssideMenu.js';
 import Footer from './components/Footer.js';
 import Offline from './components/Offline.js';
+import Splash from './pages/Splash.js';
 
 //<>//ini bernama fragmenrt, bisa diganti div juga
 function App() {
   const [item, setState ] = useState([]);
   const [statausOffline, setOffline] = useState(!navigator.onLine);
+  const [isLoadingSplash, setLoading] = useState(true);
 //memiliki 2 parameter , 1 function, 2,dependenci list[]
   React.useEffect(function(){
   (async function(){
@@ -48,16 +50,27 @@ function App() {
     setOffline(!navigator.onLine);
   }
 
-  return (
+  setTimeout(function(){
+    setLoading(false)
+  },2000)
+
+// setelah return( tidk boleh dienter
+  return(
     <>
-    {statausOffline && <Offline/>}
-    <Header/>
-    <Hero/>
-    <Browse/>
-    <Arrived itemArrived={item}/>
-    <Client/>
-    <AssideMenu/>
-    <Footer/>
+    {
+      isLoadingSplash === true ? <Splash/> :
+      (
+        <>
+          {statausOffline && <Offline/>}
+          <Header/>
+          <Hero/>
+          <Browse/>
+          <Arrived itemArrived={item}/>
+          <Client/>
+          <AssideMenu/>
+          <Footer/>
+        </>
+      )}
     </>
   );
 }
