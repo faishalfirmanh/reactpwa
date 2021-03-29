@@ -1,4 +1,7 @@
 import React from 'react';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+
+
 import {useState} from 'react';
 import Header from './components/Header'
 import Hero from './components/Hero'
@@ -9,6 +12,7 @@ import AssideMenu from './components/AssideMenu.js';
 import Footer from './components/Footer.js';
 import Offline from './components/Offline.js';
 import Splash from './pages/Splash.js';
+import Profile from './pages/Profile.js';
 
 //<>//ini bernama fragmenrt, bisa diganti div juga
 function App() {
@@ -75,4 +79,11 @@ function App() {
   );
 }
 
-export default App;
+export default function Routes(){
+  return(
+    <Router>
+      <Route path="/" exact component={App}/>
+      <Route path="/Profile" exact component={Profile}/>
+    </Router>
+  )
+};

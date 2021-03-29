@@ -112,7 +112,7 @@ registerRoute(({url})=> url.origin.includes("qorebase.io"),new NetworkFirst
 //   e.waitUntil(asyncInstall)
 // });
 
-self.addEventListener('activate', function(e)
+self.addEventListener('activate', function(e) //ce seprti lifecycle 
 {
   console.log('sw activate');
 });
@@ -124,5 +124,15 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
+
+self.addEventListener('push',function(e){
+  e.waitUntil(
+    self.registration.showNotification("LUXSPACE FURNITURE",
+    {
+      icon: "./icon-120.png",
+      body: e.data.text()
+    })
+  );
+})
 
 // Any other custom service worker logic can go here.
